@@ -942,7 +942,7 @@ export default function App() {
         <div className="max-w-5xl mx-auto px-4 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="hidden sm:block">
             <p className="text-sm font-bold" style={{ color: C.text }}>Ready to make it happen, {student.firstName}?</p>
-            <p className="text-xs" style={{ color: C.textMuted }}>Your September 2025 application window is open</p>
+            <p className="text-xs" style={{ color: C.textMuted }}>Your September 2026 application window is open</p>
           </div>
           <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
             className="flex items-center gap-2 px-7 py-3 rounded-xl font-bold text-sm cursor-pointer text-white"
