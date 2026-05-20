@@ -46,30 +46,17 @@ const courseOptions = [
   { value: 'other',   label: 'Other' },
 ]
 
-// Page 2: CGPA + Budget + Intake (dropdowns)
-const cgpaOptions = [
-  { value: 'below6', label: 'Below 6.0' },
-  { value: '6-7',    label: '6.0 – 7.0' },
-  { value: '7-8',    label: '7.0 – 8.0' },
-  { value: '8-9',    label: '8.0 – 9.0' },
-  { value: '9plus',  label: '9.0+' },
-  { value: 'na',     label: 'Not applicable' },
-]
+// Page 2: CGPA (text input) + Budget (capsules) + Intake (capsules)
 const budgetOptions = [
-  { value: 'under20', label: 'Under ₹20L' },
-  { value: '20-40',   label: '₹20L – ₹40L' },
-  { value: '40-60',   label: '₹40L – ₹60L' },
-  { value: '60-80',   label: '₹60L – ₹80L' },
-  { value: '80plus',  label: '₹80L+' },
-  { value: 'unsure',  label: "Not sure yet" },
+  { value: 'under20', label: 'Below ₹20L' },
+  { value: 'under40', label: 'Below ₹40L' },
+  { value: 'under60', label: 'Below ₹60L' },
+  { value: 'under80', label: 'Below ₹80L' },
 ]
 const intakeOptions = [
-  { value: 'sep25',  label: 'Sep 2025' },
-  { value: 'jan26',  label: 'Jan 2026' },
-  { value: 'may26',  label: 'May 2026' },
-  { value: 'sep26',  label: 'Sep 2026' },
-  { value: 'jan27',  label: 'Jan 2027' },
-  { value: 'later',  label: '2027 or later' },
+  { value: 'sep26', label: 'Sep 2026' },
+  { value: 'jan27', label: 'Jan 2027' },
+  { value: 'sep27', label: 'Sep 2027' },
 ]
 
 // ─── POST-PAYMENT QUESTION DATA ───────────────────────────────────────────────
@@ -215,6 +202,42 @@ function SelectField({ label, id, value, onChange, options, placeholder }) {
           }}
         />
       </div>
+    </div>
+  )
+}
+
+// ─── TEXT INPUT FIELD ─────────────────────────────────────────────────────────
+function TextField({ label, id, value, onChange, placeholder, hint }) {
+  const filled = value && value.trim() !== ''
+  return (
+    <div className="mb-4">
+      <label htmlFor={id} className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+        style={{ color: C.textMuted }}>
+        {label}
+      </label>
+      <input
+        id={id}
+        type="text"
+        value={value || ''}
+        onChange={e => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-2xl px-4 py-3.5 text-sm font-semibold"
+        style={{
+          background: filled ? `linear-gradient(135deg, ${C.orange}10, ${C.coral}06)` : '#FFFFFF',
+          border: `1.5px solid ${filled ? C.orange : 'rgba(0,0,0,0.1)'}`,
+          color: C.text,
+          fontFamily: 'Inter, sans-serif',
+          outline: 'none',
+          boxShadow: filled ? `0 2px 12px ${C.orange}14` : '0 1px 4px rgba(0,0,0,0.04)',
+          transition: 'all 0.18s ease',
+        }}
+        onFocus={e => { e.target.style.borderColor = C.orange; e.target.style.boxShadow = `0 0 0 3px ${C.orange}18` }}
+        onBlur={e => {
+          e.target.style.borderColor = filled ? C.orange : 'rgba(0,0,0,0.1)'
+          e.target.style.boxShadow = filled ? `0 2px 12px ${C.orange}14` : '0 1px 4px rgba(0,0,0,0.04)'
+        }}
+      />
+      {hint && <p className="text-xs mt-1.5 px-1" style={{ color: C.textMuted }}>{hint}</p>}
     </div>
   )
 }
@@ -378,7 +401,7 @@ function OnboardingFlow({ answers, onUpdate, onComplete }) {
     )
   }
 
-  // Page 2: CGPA + Budget + Intake (dropdowns)
+  // Page 2: CGPA (text) + Budget (capsules) + Intake (capsules)
   return (
     <div className="flex flex-col min-h-screen" style={{ background: C.bg }}>
       <FlowHeader onBack={() => setPage(0)} canGoBack label="About You" current={2} total={2} />
@@ -392,14 +415,37 @@ function OnboardingFlow({ answers, onUpdate, onComplete }) {
           </h2>
           <p className="text-sm mb-6" style={{ color: C.textSub }}>Helps us personalise your salary & scholarship data</p>
 
-          <SelectField label="Undergraduate CGPA" id="cgpa" value={answers.cgpa}
-            onChange={val => onUpdate('cgpa', val)} options={cgpaOptions} placeholder="Select your CGPA range" />
+          {/* CGPA — free text */}
+          <TextField
+            label="Undergraduate CGPA"
+            id="cgpa"
+            value={answers.cgpa}
+            onChange={val => onUpdate('cgpa', val)}
+            placeholder="e.g. 7.5"
+            hint="Enter your CGPA on a 10-point scale"
+          />
 
-          <SelectField label="Total budget (tuition + living)" id="budget" value={answers.budget}
-            onChange={val => onUpdate('budget', val)} options={budgetOptions} placeholder="Select budget range" />
+          {/* Budget — 4 capsules */}
+          <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: C.textMuted }}>
+            Total budget (tuition + living)
+          </p>
+          <div className="grid grid-cols-2 gap-2.5 mb-5">
+            {budgetOptions.map(opt => (
+              <OptionBtn key={opt.value} option={opt} selected={answers.budget}
+                onClick={val => onUpdate('budget', val)} />
+            ))}
+          </div>
 
-          <SelectField label="Target intake" id="intake" value={answers.intake}
-            onChange={val => onUpdate('intake', val)} options={intakeOptions} placeholder="Select intake month & year" />
+          {/* Intake — 3 capsules */}
+          <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: C.textMuted }}>
+            Target intake
+          </p>
+          <div className="grid grid-cols-3 gap-2.5">
+            {intakeOptions.map(opt => (
+              <OptionBtn key={opt.value} option={opt} selected={answers.intake}
+                onClick={val => onUpdate('intake', val)} />
+            ))}
+          </div>
 
           <ContinueBtn disabled={!p2Ready} onClick={onComplete} label="See My Report" />
         </motion.div>
