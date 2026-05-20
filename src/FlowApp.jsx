@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ChevronLeft, Check, ArrowRight, FastForward,
+  ChevronLeft, ChevronDown, Check, ArrowRight, FastForward,
   TrendingUp, Award, Users, Target,
   Shield, Zap, Clock, Star, Lock,
 } from 'lucide-react'
@@ -23,226 +23,100 @@ const C = {
   textMuted: '#A8A29E',
 }
 
-// ─── ONBOARDING QUESTIONS ─────────────────────────────────────────────────────
-const onboardingQuestions = [
-  {
-    id: 'country',
-    question: 'Which country are you planning to study in?',
-    subtitle: "We'll personalise your report based on your destination",
-    options: [
-      { value: 'canada',    label: 'Canada',    flag: '🇨🇦' },
-      { value: 'uk',        label: 'UK',         flag: '🇬🇧' },
-      { value: 'usa',       label: 'USA',        flag: '🇺🇸' },
-      { value: 'australia', label: 'Australia',  flag: '🇦🇺' },
-      { value: 'germany',   label: 'Germany',    flag: '🇩🇪' },
-      { value: 'ireland',   label: 'Ireland',    flag: '🇮🇪' },
-    ],
-  },
-  {
-    id: 'course',
-    question: 'What course are you interested in?',
-    subtitle: 'Choose the field you want to pursue',
-    options: [
-      { value: 'cs',    label: 'Computer Science' },
-      { value: 'ds',    label: 'Data Science' },
-      { value: 'ba',    label: 'Business Analytics' },
-      { value: 'mba',   label: 'MBA' },
-      { value: 'ee',    label: 'Electrical Engg.' },
-      { value: 'other', label: 'Other' },
-    ],
-  },
-  {
-    id: 'budget',
-    question: "What's your total budget for the program?",
-    subtitle: 'Including tuition + living costs',
-    options: [
-      { value: 'under20', label: 'Under ₹20L' },
-      { value: '20-40',   label: '₹20L – ₹40L' },
-      { value: '40-60',   label: '₹40L – ₹60L' },
-      { value: '60-80',   label: '₹60L – ₹80L' },
-      { value: '80plus',  label: '₹80L+' },
-      { value: 'unsure',  label: "I'm not sure" },
-    ],
-  },
-  {
-    id: 'cgpa',
-    question: "What's your undergraduate CGPA?",
-    subtitle: 'Helps us match you with the right universities',
-    options: [
-      { value: 'below6', label: 'Below 6.0' },
-      { value: '6-7',    label: '6.0 – 7.0' },
-      { value: '7-8',    label: '7.0 – 8.0' },
-      { value: '8-9',    label: '8.0 – 9.0' },
-      { value: '9plus',  label: '9.0+' },
-      { value: 'na',     label: 'Not applicable' },
-    ],
-  },
-  {
-    id: 'intake',
-    question: 'When are you planning to start?',
-    subtitle: 'Your target intake year and semester',
-    options: [
-      { value: 'jan25',  label: 'Jan 2025' },
-      { value: 'may25',  label: 'May 2025' },
-      { value: 'sep25',  label: 'Sep 2025' },
-      { value: 'jan26',  label: 'Jan 2026' },
-      { value: 'sep26',  label: 'Sep 2026' },
-      { value: 'later',  label: '2027 or later' },
-    ],
-  },
+// ─── ONBOARDING PAGE DATA ─────────────────────────────────────────────────────
+// Page 1: Country + Course (MCQ)
+const countryOptions = [
+  { value: 'canada',    label: 'Canada',    flag: '🇨🇦' },
+  { value: 'uk',        label: 'UK',        flag: '🇬🇧' },
+  { value: 'usa',       label: 'USA',       flag: '🇺🇸' },
+  { value: 'australia', label: 'Australia', flag: '🇦🇺' },
+  { value: 'germany',   label: 'Germany',   flag: '🇩🇪' },
+  { value: 'ireland',   label: 'Ireland',   flag: '🇮🇪' },
+]
+const courseOptions = [
+  { value: 'cs',      label: 'Computer Science (MS/M.Eng)' },
+  { value: 'ds',      label: 'Data Science (MS)' },
+  { value: 'ai',      label: 'Artificial Intelligence (MS)' },
+  { value: 'ba',      label: 'Business Analytics (MS)' },
+  { value: 'mba',     label: 'MBA' },
+  { value: 'ee',      label: 'Electrical Engineering (MS)' },
+  { value: 'finance', label: 'Finance / FinTech (MS)' },
+  { value: 'mgmt',    label: 'Management (MiM)' },
+  { value: 'ece',     label: 'Electronics & Comm. (MS)' },
+  { value: 'other',   label: 'Other' },
 ]
 
-// ─── POST-PAYMENT QUESTIONS ───────────────────────────────────────────────────
-const postQuestions = [
-  {
-    id: 'degree',
-    question: "What's your highest completed degree?",
-    subtitle: null,
-    options: [
-      { value: 'btech',    label: 'B.Tech / B.E.' },
-      { value: 'bsc',      label: 'B.Sc' },
-      { value: 'bca',      label: 'BCA' },
-      { value: 'bcom_bba', label: 'B.Com / BBA' },
-      { value: 'diploma',  label: 'Diploma' },
-      { value: 'other',    label: 'Other' },
-    ],
-  },
-  {
-    id: 'specialization',
-    question: 'What was your specialization?',
-    subtitle: null,
-    options: [
-      { value: 'cs',         label: 'Computer Science' },
-      { value: 'it',         label: 'Info. Technology' },
-      { value: 'electronics',label: 'Electronics' },
-      { value: 'mechanical', label: 'Mechanical' },
-      { value: 'maths',      label: 'Maths / Stats' },
-      { value: 'other',      label: 'Other' },
-    ],
-  },
-  {
-    id: 'englishTest',
-    question: 'Have you taken an English proficiency test?',
-    subtitle: 'IELTS, TOEFL, PTE, or similar',
-    options: [
-      { value: 'yes', label: 'Yes, I have ✓' },
-      { value: 'no',  label: 'Not yet' },
-    ],
-  },
-  {
-    id: 'englishTestName',
-    question: 'Which test did you take?',
-    subtitle: null,
-    showIf: (a) => a.englishTest === 'yes',
-    options: [
-      { value: 'ielts',     label: 'IELTS' },
-      { value: 'toefl',     label: 'TOEFL iBT' },
-      { value: 'pte',       label: 'PTE Academic' },
-      { value: 'duolingo',  label: 'Duolingo English' },
-      { value: 'cambridge', label: 'Cambridge C1/C2' },
-      { value: 'other',     label: 'Other' },
-    ],
-  },
-  {
-    id: 'englishScore',
-    question: 'What was your score?',
-    subtitle: null,
-    showIf: (a) => a.englishTest === 'yes',
-    dynamicOptions: (a) => {
-      switch (a.englishTestName) {
-        case 'ielts':    return [
-          { value: 'under6', label: 'Below 6.0' },
-          { value: '6',      label: '6.0 – 6.5' },
-          { value: '7',      label: '7.0 – 7.5' },
-          { value: '8plus',  label: '8.0+' },
-        ]
-        case 'toefl':   return [
-          { value: 'under80', label: 'Below 80' },
-          { value: '80-99',   label: '80 – 99' },
-          { value: '100-109', label: '100 – 109' },
-          { value: '110plus', label: '110+' },
-        ]
-        case 'pte':     return [
-          { value: 'under50', label: 'Below 50' },
-          { value: '50-64',   label: '50 – 64' },
-          { value: '65-79',   label: '65 – 79' },
-          { value: '80plus',  label: '80+' },
-        ]
-        case 'duolingo': return [
-          { value: 'under100', label: 'Below 100' },
-          { value: '100-120',  label: '100 – 120' },
-          { value: '120-140',  label: '120 – 140' },
-          { value: '140plus',  label: '140+' },
-        ]
-        default: return [
-          { value: 'low',  label: 'Below average' },
-          { value: 'mid',  label: 'Average' },
-          { value: 'high', label: 'Above average' },
-          { value: 'top',  label: 'Excellent' },
-        ]
-      }
-    },
-  },
-  {
-    id: 'workExp',
-    question: 'Do you have full-time work experience?',
-    subtitle: 'After completing your undergraduate degree',
-    options: [
-      { value: 'yes', label: 'Yes, I work' },
-      { value: 'no',  label: "I'm a fresher" },
-    ],
-  },
-  {
-    id: 'workRole',
-    question: "What's your current role?",
-    subtitle: null,
-    showIf: (a) => a.workExp === 'yes',
-    options: [
-      { value: 'swe',        label: 'Software Engineer' },
-      { value: 'da',         label: 'Data Analyst' },
-      { value: 'pm',         label: 'Product Manager' },
-      { value: 'ba',         label: 'Business Analyst' },
-      { value: 'consultant', label: 'Consultant' },
-      { value: 'other',      label: 'Other' },
-    ],
-  },
-  {
-    id: 'currentSalary',
-    question: 'What is your current CTC?',
-    subtitle: null,
-    showIf: (a) => a.workExp === 'yes',
-    options: [
-      { value: 'under5', label: 'Under ₹5L' },
-      { value: '5-10',   label: '₹5L – ₹10L' },
-      { value: '10-15',  label: '₹10L – ₹15L' },
-      { value: '15-20',  label: '₹15L – ₹20L' },
-      { value: '20plus', label: '₹20L+' },
-    ],
-  },
-  {
-    id: 'gapYears',
-    question: 'Have you taken any gap years?',
-    subtitle: null,
-    options: [
-      { value: '0',    label: 'No gap at all' },
-      { value: '1',    label: '1 year' },
-      { value: '2',    label: '2 years' },
-      { value: '3plus',label: '3 or more years' },
-    ],
-  },
-  {
-    id: 'jobGoal',
-    question: "What job do you want after your Master's?",
-    subtitle: "We'll tailor your report to this goal",
-    options: [
-      { value: 'swe',        label: 'Software Engineer' },
-      { value: 'ml',         label: 'ML / AI Engineer' },
-      { value: 'pm',         label: 'Product Manager' },
-      { value: 'ds',         label: 'Data Scientist' },
-      { value: 'consultant', label: 'Consultant' },
-      { value: 'other',      label: 'Other' },
-    ],
-  },
+// Page 2: CGPA + Budget + Intake (dropdowns)
+const cgpaOptions = [
+  { value: 'below6', label: 'Below 6.0' },
+  { value: '6-7',    label: '6.0 – 7.0' },
+  { value: '7-8',    label: '7.0 – 8.0' },
+  { value: '8-9',    label: '8.0 – 9.0' },
+  { value: '9plus',  label: '9.0+' },
+  { value: 'na',     label: 'Not applicable' },
+]
+const budgetOptions = [
+  { value: 'under20', label: 'Under ₹20L' },
+  { value: '20-40',   label: '₹20L – ₹40L' },
+  { value: '40-60',   label: '₹40L – ₹60L' },
+  { value: '60-80',   label: '₹60L – ₹80L' },
+  { value: '80plus',  label: '₹80L+' },
+  { value: 'unsure',  label: "Not sure yet" },
+]
+const intakeOptions = [
+  { value: 'sep25',  label: 'Sep 2025' },
+  { value: 'jan26',  label: 'Jan 2026' },
+  { value: 'may26',  label: 'May 2026' },
+  { value: 'sep26',  label: 'Sep 2026' },
+  { value: 'jan27',  label: 'Jan 2027' },
+  { value: 'later',  label: '2027 or later' },
+]
+
+// ─── POST-PAYMENT QUESTION DATA ───────────────────────────────────────────────
+const educationOptions = [
+  { value: 'btech',    label: 'B.Tech / B.E.' },
+  { value: 'bsc',      label: 'B.Sc' },
+  { value: 'bca',      label: 'BCA' },
+  { value: 'bcom_bba', label: 'B.Com / BBA' },
+  { value: 'mba',      label: 'MBA' },
+  { value: 'diploma',  label: 'Diploma' },
+  { value: 'other',    label: 'Other' },
+]
+const specializationOptions = [
+  { value: 'cs',       label: 'Computer Science' },
+  { value: 'it',       label: 'Information Technology' },
+  { value: 'ece',      label: 'Electronics & Comm. (ECE)' },
+  { value: 'ee',       label: 'Electrical Engineering' },
+  { value: 'mech',     label: 'Mechanical Engineering' },
+  { value: 'civil',    label: 'Civil Engineering' },
+  { value: 'maths',    label: 'Mathematics / Statistics' },
+  { value: 'physics',  label: 'Physics / Applied Sciences' },
+  { value: 'commerce', label: 'Commerce / Business' },
+  { value: 'finance',  label: 'Finance / Accounting' },
+  { value: 'other',    label: 'Other' },
+]
+const jobRoleOptions = [
+  { value: 'swe',         label: 'Software Engineer' },
+  { value: 'sde2',        label: 'Software Engineer II / SDE-2' },
+  { value: 'fullstack',   label: 'Full Stack Developer' },
+  { value: 'backend',     label: 'Backend Developer' },
+  { value: 'frontend',    label: 'Frontend Developer' },
+  { value: 'devops',      label: 'DevOps / Cloud Engineer' },
+  { value: 'data_eng',    label: 'Data Engineer' },
+  { value: 'data_analyst',label: 'Data Analyst' },
+  { value: 'ml_eng',      label: 'ML / AI Engineer' },
+  { value: 'pm',          label: 'Product Manager' },
+  { value: 'ba',          label: 'Business Analyst' },
+  { value: 'consultant',  label: 'Consultant / Strategy' },
+  { value: 'finance_ana', label: 'Finance Analyst' },
+  { value: 'qa',          label: 'QA / Test Engineer' },
+  { value: 'embedded',    label: 'Embedded / VLSI Engineer' },
+  { value: 'research',    label: 'Research Analyst' },
+  { value: 'other',       label: 'Other' },
+]
+const englishTestOptions = [
+  { value: 'yes', label: 'Yes, I have' },
+  { value: 'no',  label: 'Not yet' },
 ]
 
 // ─── LOADER MESSAGES ──────────────────────────────────────────────────────────
@@ -255,9 +129,7 @@ const loaderMessages = [
 ]
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
-function getVisiblePostQuestions(answers) {
-  return postQuestions.filter(q => !q.showIf || q.showIf(answers))
-}
+// (no dynamic question filtering needed — all flows are fixed)
 
 // ─── MCQ OPTION BUTTON ────────────────────────────────────────────────────────
 function OptionBtn({ option, selected, onClick }) {
@@ -295,6 +167,79 @@ function OptionBtn({ option, selected, onClick }) {
       >
         <Check size={11} color="#fff" strokeWidth={3} />
       </motion.span>
+    </motion.button>
+  )
+}
+
+// ─── STYLED DROPDOWN ─────────────────────────────────────────────────────────
+function SelectField({ label, id, value, onChange, options, placeholder }) {
+  const filled = value && value !== ''
+  return (
+    <div className="mb-4">
+      <label
+        htmlFor={id}
+        className="block text-xs font-bold uppercase tracking-wider mb-1.5"
+        style={{ color: C.textMuted }}
+      >
+        {label}
+      </label>
+      <div className="relative">
+        <select
+          id={id}
+          value={value || ''}
+          onChange={e => onChange(e.target.value)}
+          className="w-full appearance-none rounded-2xl px-4 py-3.5 text-sm font-semibold cursor-pointer"
+          style={{
+            background: filled
+              ? `linear-gradient(135deg, ${C.orange}10, ${C.coral}06)`
+              : '#FFFFFF',
+            border: `1.5px solid ${filled ? C.orange : 'rgba(0,0,0,0.1)'}`,
+            color: filled ? C.text : C.textMuted,
+            fontFamily: 'Inter, sans-serif',
+            outline: 'none',
+            boxShadow: filled ? `0 2px 12px ${C.orange}14` : '0 1px 4px rgba(0,0,0,0.04)',
+            paddingRight: 44,
+          }}
+        >
+          <option value="" disabled>{placeholder || 'Select…'}</option>
+          {options.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <ChevronDown
+          size={16}
+          style={{
+            color: filled ? C.orange : C.textMuted,
+            position: 'absolute', right: 14, top: '50%',
+            transform: 'translateY(-50%)', pointerEvents: 'none',
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+// ─── CONTINUE BUTTON ──────────────────────────────────────────────────────────
+function ContinueBtn({ disabled, onClick, label = 'Continue' }) {
+  return (
+    <motion.button
+      whileHover={disabled ? {} : { scale: 1.02 }}
+      whileTap={disabled ? {} : { scale: 0.97 }}
+      onClick={disabled ? undefined : onClick}
+      className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-base text-white mt-6"
+      style={{
+        background: disabled
+          ? 'rgba(0,0,0,0.1)'
+          : `linear-gradient(135deg, ${C.orange}, ${C.coral})`,
+        border: 'none',
+        boxShadow: disabled ? 'none' : `0 6px 24px ${C.orange}35`,
+        fontFamily: 'Plus Jakarta Sans',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        color: disabled ? C.textMuted : '#fff',
+        transition: 'all 0.2s ease',
+      }}
+    >
+      {label} <ArrowRight size={16} />
     </motion.button>
   )
 }
@@ -390,36 +335,76 @@ function QuestionScreen({ q, answers, onAnswer, onBack, canGoBack, label, curren
   )
 }
 
-// ─── SCREEN 1: ONBOARDING FLOW ────────────────────────────────────────────────
+// ─── SCREEN 1: ONBOARDING FLOW (2 pages) ─────────────────────────────────────
 function OnboardingFlow({ answers, onUpdate, onComplete }) {
-  const [step, setStep] = useState(0)
-  const advancing = useRef(false)
+  const [page, setPage] = useState(0) // 0 = country+course, 1 = cgpa+budget+intake
 
-  const handleAnswer = (id, val) => {
-    if (advancing.current) return
-    advancing.current = true
-    onUpdate(id, val)
-    setTimeout(() => {
-      advancing.current = false
-      if (step < onboardingQuestions.length - 1) setStep(s => s + 1)
-      else onComplete()
-    }, 300)
+  const p1Ready = answers.country && answers.course
+  const p2Ready = answers.cgpa && answers.budget && answers.intake
+
+  // Page 1: Country + Course (MCQ grids)
+  if (page === 0) {
+    return (
+      <div className="flex flex-col min-h-screen" style={{ background: C.bg }}>
+        <FlowHeader onBack={null} canGoBack={false} label="About You" current={1} total={2} />
+        <div className="flex-1 px-5 pt-6 pb-10">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}>
+
+            <h2 className="font-extrabold mb-1 leading-tight"
+              style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(20px,5.5vw,26px)', color: C.text, letterSpacing: '-0.5px' }}>
+              Where & what do you want to study?
+            </h2>
+            <p className="text-sm mb-5" style={{ color: C.textSub }}>Pick your destination country and course</p>
+
+            {/* Country */}
+            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: C.textMuted }}>Country</p>
+            <div className="grid grid-cols-2 gap-2.5 mb-5">
+              {countryOptions.map(opt => (
+                <OptionBtn key={opt.value} option={opt} selected={answers.country}
+                  onClick={val => onUpdate('country', val)} />
+              ))}
+            </div>
+
+            {/* Course — dropdown */}
+            <SelectField label="Course" id="course" value={answers.course}
+              onChange={val => onUpdate('course', val)} options={courseOptions}
+              placeholder="Select your course" />
+
+            <ContinueBtn disabled={!p1Ready} onClick={() => setPage(1)} />
+          </motion.div>
+        </div>
+      </div>
+    )
   }
 
-  const q = onboardingQuestions[step]
-  if (!q) return null
-
+  // Page 2: CGPA + Budget + Intake (dropdowns)
   return (
-    <QuestionScreen
-      q={q}
-      answers={answers}
-      onAnswer={handleAnswer}
-      onBack={() => setStep(s => Math.max(0, s - 1))}
-      canGoBack={step > 0}
-      label="About You"
-      current={step + 1}
-      total={onboardingQuestions.length}
-    />
+    <div className="flex flex-col min-h-screen" style={{ background: C.bg }}>
+      <FlowHeader onBack={() => setPage(0)} canGoBack label="About You" current={2} total={2} />
+      <div className="flex-1 px-5 pt-6 pb-10">
+        <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}>
+
+          <h2 className="font-extrabold mb-1 leading-tight"
+            style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(20px,5.5vw,26px)', color: C.text, letterSpacing: '-0.5px' }}>
+            A few more details
+          </h2>
+          <p className="text-sm mb-6" style={{ color: C.textSub }}>Helps us personalise your salary & scholarship data</p>
+
+          <SelectField label="Undergraduate CGPA" id="cgpa" value={answers.cgpa}
+            onChange={val => onUpdate('cgpa', val)} options={cgpaOptions} placeholder="Select your CGPA range" />
+
+          <SelectField label="Total budget (tuition + living)" id="budget" value={answers.budget}
+            onChange={val => onUpdate('budget', val)} options={budgetOptions} placeholder="Select budget range" />
+
+          <SelectField label="Target intake" id="intake" value={answers.intake}
+            onChange={val => onUpdate('intake', val)} options={intakeOptions} placeholder="Select intake month & year" />
+
+          <ContinueBtn disabled={!p2Ready} onClick={onComplete} label="See My Report" />
+        </motion.div>
+      </div>
+    </div>
   )
 }
 
@@ -600,22 +585,19 @@ function PaymentScreen({ onPay }) {
 }
 
 // ─── SCREEN 3: POST-PAYMENT FLOW ──────────────────────────────────────────────
+// 3 fixed steps: 0 = education, 1 = work experience, 2 = english test (MCQ)
 function PostPaymentFlow({ answers, onUpdate, onComplete }) {
   const [step, setStep] = useState(-1) // -1 = intro splash
   const advancing = useRef(false)
 
-  const visibleQuestions = getVisiblePostQuestions(answers)
-
-  const handleAnswer = (id, val) => {
+  const handleMCQAnswer = (id, val) => {
     if (advancing.current) return
     advancing.current = true
     onUpdate(id, val)
-    const updated = { ...answers, [id]: val }
-    const next = getVisiblePostQuestions(updated)
     setTimeout(() => {
       advancing.current = false
-      if (step < next.length - 1) setStep(s => s + 1)
-      else onComplete()
+      // step 2 = english test (last), auto-advance to report
+      onComplete()
     }, 300)
   }
 
@@ -697,9 +679,9 @@ function PostPaymentFlow({ answers, onUpdate, onComplete }) {
             className="flex items-center justify-center gap-4 text-xs mb-8"
             style={{ color: C.textMuted }}
           >
-            <span>📋 {visibleQuestions.length} questions</span>
+            <span>📋 3 quick questions</span>
             <span>·</span>
-            <span>⏱ ~2 minutes</span>
+            <span>⏱ ~1 minute</span>
           </motion.div>
 
           <motion.button
@@ -724,19 +706,115 @@ function PostPaymentFlow({ answers, onUpdate, onComplete }) {
     )
   }
 
-  const currentQ = visibleQuestions[step]
-  if (!currentQ) return null
+  // Step 0 – Education: degree + specialization (both on same page)
+  if (step === 0) {
+    const eduReady = answers.education && answers.specialization
+    return (
+      <div className="flex flex-col min-h-screen" style={{ background: C.bg }}>
+        <FlowHeader onBack={handleBack} canGoBack label="Your Profile" current={1} total={3} />
+        <div className="flex-1 px-5 pt-6 pb-10">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}>
+            <h2 className="font-extrabold mb-1 leading-tight"
+              style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(20px,5.5vw,26px)', color: C.text, letterSpacing: '-0.5px' }}>
+              Tell us about your education
+            </h2>
+            <p className="text-sm mb-6" style={{ color: C.textSub }}>Your undergraduate degree and field of study</p>
+            <SelectField label="Highest Degree" id="education" value={answers.education}
+              onChange={val => onUpdate('education', val)} options={educationOptions}
+              placeholder="Select your degree" />
+            <SelectField label="Specialization / Branch" id="specialization" value={answers.specialization}
+              onChange={val => onUpdate('specialization', val)} options={specializationOptions}
+              placeholder="Select your specialization" />
+            <ContinueBtn disabled={!eduReady} onClick={() => setStep(1)} />
+          </motion.div>
+        </div>
+      </div>
+    )
+  }
 
+  // Step 1 – Work Experience: job role + no-experience checkbox
+  if (step === 1) {
+    const noExp = answers.noExperience === true
+    const workReady = noExp || !!answers.jobRole
+    return (
+      <div className="flex flex-col min-h-screen" style={{ background: C.bg }}>
+        <FlowHeader onBack={handleBack} canGoBack label="Your Profile" current={2} total={3} />
+        <div className="flex-1 px-5 pt-6 pb-10">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}>
+            <h2 className="font-extrabold mb-1 leading-tight"
+              style={{ fontFamily: 'Plus Jakarta Sans', fontSize: 'clamp(20px,5.5vw,26px)', color: C.text, letterSpacing: '-0.5px' }}>
+              What's your current job role?
+            </h2>
+            <p className="text-sm mb-6" style={{ color: C.textSub }}>Select the role closest to your current position</p>
+
+            {/* Job role dropdown — disabled when no-exp checked */}
+            <div style={{ opacity: noExp ? 0.4 : 1, pointerEvents: noExp ? 'none' : 'auto',
+              transition: 'opacity 0.2s ease' }}>
+              <SelectField label="Job Role" id="jobRole" value={answers.jobRole}
+                onChange={val => onUpdate('jobRole', val)} options={jobRoleOptions}
+                placeholder="Select your job role" />
+            </div>
+
+            {/* No experience checkbox */}
+            <motion.label
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-3 mt-2 cursor-pointer select-none rounded-2xl px-4 py-3.5"
+              style={{
+                background: noExp ? `${C.orange}10` : 'rgba(0,0,0,0.03)',
+                border: `1.5px solid ${noExp ? C.orange : 'rgba(0,0,0,0.08)'}`,
+                transition: 'all 0.18s ease',
+              }}
+            >
+              <div
+                className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: noExp ? C.orange : '#fff',
+                  border: `2px solid ${noExp ? C.orange : 'rgba(0,0,0,0.18)'}`,
+                  transition: 'all 0.18s ease',
+                }}
+              >
+                {noExp && <Check size={12} color="#fff" strokeWidth={3} />}
+              </div>
+              <span className="text-sm font-semibold" style={{ color: noExp ? C.orangeDark : C.textSub }}>
+                I have no work experience
+              </span>
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={noExp}
+                onChange={e => {
+                  onUpdate('noExperience', e.target.checked)
+                  if (e.target.checked) onUpdate('jobRole', '')
+                }}
+              />
+            </motion.label>
+
+            <ContinueBtn disabled={!workReady} onClick={() => setStep(2)} />
+          </motion.div>
+        </div>
+      </div>
+    )
+  }
+
+  // Step 2 – English Test (MCQ, auto-advance)
+  const englishQ = {
+    id: 'englishTest',
+    question: 'Have you taken an English proficiency test?',
+    subtitle: 'IELTS, TOEFL, PTE, Duolingo, or similar',
+    options: englishTestOptions,
+  }
   return (
     <QuestionScreen
-      q={currentQ}
+      q={englishQ}
       answers={answers}
-      onAnswer={handleAnswer}
+      onAnswer={handleMCQAnswer}
       onBack={handleBack}
       canGoBack
       label="Your Profile"
-      current={step + 1}
-      total={visibleQuestions.length}
+      current={3}
+      total={3}
     />
   )
 }

@@ -53,20 +53,20 @@ const scorecard = [
 ]
 
 const expenseBreakdown = [
-  { label: 'Tuition (2 years)', amount: '₹32L', detail: 'CAD ~52,000/year' },
-  { label: 'Living costs (2 years)', amount: '₹16L', detail: 'CAD ~1,300/month' },
-  { label: 'Travel & misc.', amount: '₹3L', detail: 'Flights, setup, insurance' },
-  { label: 'Loan interest', amount: '₹4L', detail: '₹50L @ 9.5% for 2 yrs' },
+  { label: 'Tuition (2 years)', amount: '₹32L', detail: 'CAD ~52,000/year · university fees' },
+  { label: 'Living costs (2 years)', amount: '₹16L', detail: 'CAD ~1,300/month · rent, food, transit' },
+  { label: 'Travel & miscellaneous', amount: '₹3L', detail: 'Flights, setup costs, books' },
+  { label: 'Study permit & health insurance', amount: '₹1L', detail: 'Canada-specific · OHIP + permit fees' },
 ]
 
 const breakEvenData = [
-  { month: 'Grad', investment: 55, earnings: 0 },
-  { month: '6m', investment: 55, earnings: 5.4 },
-  { month: '1yr', investment: 55, earnings: 16.2 },
-  { month: '18m', investment: 55, earnings: 32.4 },
-  { month: '2yr', investment: 55, earnings: 48.6 },
-  { month: '2.4yr', investment: 55, earnings: 56 },
-  { month: '3yr', investment: 55, earnings: 72.9 },
+  { month: 'Grad', investment: 52, earnings: 0 },
+  { month: '6m', investment: 52, earnings: 5.4 },
+  { month: '1yr', investment: 52, earnings: 16.2 },
+  { month: '18m', investment: 52, earnings: 32.4 },
+  { month: '2yr', investment: 52, earnings: 48.6 },
+  { month: '2.2yr', investment: 52, earnings: 53 },
+  { month: '3yr', investment: 52, earnings: 72.9 },
 ]
 
 const fiveYearData = [
@@ -84,9 +84,22 @@ const scholarships = [
 ]
 
 const careers = [
-  { role: 'Senior Software Engineer', canadaSalary: '₹67.9L/yr', canadaInr: 'CAD 1,10,000', indiaSalary: '₹41L', uplift: '+65%', demand: 'Very High', demandColor: C.orange },
-  { role: 'ML / AI Engineer', canadaSalary: '₹77.1L/yr', canadaInr: 'CAD 1,25,000', indiaSalary: '₹45L', uplift: '+70%', demand: 'Explosive', demandColor: C.emerald },
-  { role: 'Product Manager (Tech)', canadaSalary: '₹70.9L/yr', canadaInr: 'CAD 1,15,000', indiaSalary: '₹47L', uplift: '+50%', demand: 'High', demandColor: C.violet },
+  { role: 'Senior Software Engineer', canadaSalary: '₹67.9L/yr', canadaInr: 'CAD 1,10,000', indiaSalary: '₹41.2L/yr', uplift: '+65%', demand: 'Very High', demandColor: C.orange },
+  { role: 'ML / AI Engineer', canadaSalary: '₹77.1L/yr', canadaInr: 'CAD 1,25,000', indiaSalary: '₹45.4L/yr', uplift: '+70%', demand: 'Explosive', demandColor: C.emerald },
+  { role: 'Product Manager (Tech)', canadaSalary: '₹70.9L/yr', canadaInr: 'CAD 1,15,000', indiaSalary: '₹47.3L/yr', uplift: '+50%', demand: 'High', demandColor: C.violet },
+]
+
+const topHirers = [
+  { name: 'Amazon', color: '#FF9900' },
+  { name: 'Google', color: '#4285F4' },
+  { name: 'Shopify', color: '#96BF48' },
+  { name: 'Microsoft', color: '#00A4EF' },
+  { name: 'RBC', color: '#003168' },
+  { name: 'TD Bank', color: '#00843D' },
+  { name: 'IBM', color: '#1F70C1' },
+  { name: 'Deloitte', color: '#86BC25' },
+  { name: 'Salesforce', color: '#00A1E0' },
+  { name: 'Accenture', color: '#A100FF' },
 ]
 
 const peers = [
@@ -345,7 +358,7 @@ function HeroSection() {
 
         {/* Personal greeting */}
         <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="text-base font-semibold mb-2" style={{ color: C.textSub }}>
+          className="text-base font-semibold mb-3" style={{ color: C.textSub }}>
           Prepared exclusively for <span style={{ color: C.text, fontWeight: 800 }}>{student.name}</span>
         </motion.p>
 
@@ -354,31 +367,19 @@ function HeroSection() {
           transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           style={{ fontFamily: 'Plus Jakarta Sans', fontWeight: 900, fontSize: 'clamp(28px,5.5vw,52px)', lineHeight: 1.1, letterSpacing: '-1.5px' }}
           className="mb-3">
-          <span style={{ color: C.text }}>Your path to </span>
+          <span style={{ color: C.text }}>Your Roadmap to a </span>
           <span style={{ background: `linear-gradient(135deg, ${C.orange}, ${C.coral})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            ₹63L/yr
+            Master's in CS
           </span>
           <br />
-          <span style={{ color: C.text }}>in Canada is </span>
+          <span style={{ color: C.text }}>in Canada </span>
           <span style={{ background: `linear-gradient(135deg, ${C.coral}, ${C.violet})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            real.
+            is here.
           </span>
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-          className="text-sm mb-5" style={{ color: C.textSub }}>
-          {student.undergrad} · {student.workExp}
-        </motion.p>
-
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-          className="flex flex-wrap justify-center gap-2 mb-7">
-          {[student.intake, `CGPA ${student.cgpa}`].map((tag) => (
-            <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-semibold"
-              style={{ background: '#FFFFFF', color: C.textSub, border: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
-              {tag}
-            </span>
-          ))}
-        </motion.div>
+          className="mb-7" />
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.4 }}
           className="flex flex-col items-center">
@@ -434,7 +435,7 @@ function Section6() {
   return (
     <InView className="px-4 max-w-5xl mx-auto mb-6">
       <SectionLabel num="02" label="Career Paths for You" color={C.coral} />
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid md:grid-cols-3 gap-4 mb-5">
         {careers.map((c, i) => (
           <motion.div key={i} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <Card className="h-full flex flex-col" accent={C.coral}>
@@ -451,21 +452,37 @@ function Section6() {
               </div>
               <h4 className="font-bold text-base mb-3" style={{ color: C.text, fontFamily: 'Plus Jakarta Sans' }}>{c.role}</h4>
               <div className="mt-auto pt-3" style={{ borderTop: `1px solid rgba(0,0,0,0.06)` }}>
-                <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-xs mb-0.5" style={{ color: C.textMuted }}>Canada salary</p>
-                    <p className="font-bold text-base" style={{ color: C.text, fontFamily: 'Plus Jakarta Sans' }}>{c.canadaSalary}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="rounded-xl p-2.5" style={{ background: `${C.coral}08`, border: `1px solid ${C.coral}15` }}>
+                    <p className="text-xs mb-1" style={{ color: C.textMuted }}>🍁 Canada</p>
+                    <p className="font-bold text-sm leading-tight" style={{ color: C.text, fontFamily: 'Plus Jakarta Sans' }}>{c.canadaSalary}</p>
                     <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>{c.canadaInr}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xs mb-0.5" style={{ color: C.textMuted }}>vs India</p>
-                    <span className="text-2xl font-black" style={{ color: C.emerald, fontFamily: 'Plus Jakarta Sans' }}>{c.uplift}</span>
+                  <div className="rounded-xl p-2.5" style={{ background: 'rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.07)' }}>
+                    <p className="text-xs mb-1" style={{ color: C.textMuted }}>🇮🇳 India</p>
+                    <p className="font-bold text-sm leading-tight" style={{ color: C.textSub, fontFamily: 'Plus Jakarta Sans' }}>{c.indiaSalary}</p>
+                    <p className="text-xs mt-0.5 font-bold" style={{ color: C.emerald }}>{c.uplift} uplift</p>
                   </div>
                 </div>
               </div>
             </Card>
           </motion.div>
         ))}
+      </div>
+
+      {/* Companies that hire */}
+      <div className="rounded-2xl px-4 py-4" style={{ background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.07)', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+        <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: C.textMuted }}>Companies that hire for these roles in Canada</p>
+        <div className="flex flex-wrap gap-2">
+          {topHirers.map((co, i) => (
+            <motion.span key={i} custom={i} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+              style={{ background: `${co.color}10`, border: `1px solid ${co.color}30`, color: C.textSub }}>
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: co.color }} />
+              {co.name}
+            </motion.span>
+          ))}
+        </div>
       </div>
     </InView>
   )
@@ -505,7 +522,7 @@ function Section2() {
             </div>
             <span className="font-bold text-sm" style={{ color: C.text, fontFamily: 'Plus Jakarta Sans' }}>Total Cost Breakdown</span>
             <span className="text-xs px-2 py-0.5 rounded-full font-bold"
-              style={{ background: `${C.amber}15`, color: C.amber, border: `1px solid ${C.amber}25` }}>₹55L Total</span>
+              style={{ background: `${C.amber}15`, color: C.amber, border: `1px solid ${C.amber}25` }}>₹52L Total</span>
           </div>
           <span style={{ color: C.textMuted }}>{expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}</span>
         </button>
@@ -525,7 +542,7 @@ function Section2() {
                 ))}
                 <div className="flex items-center justify-between pt-3" style={{ borderTop: `1px solid ${C.amber}20` }}>
                   <span className="font-bold" style={{ color: C.text }}>Total</span>
-                  <span className="font-black text-xl" style={{ color: C.amber, fontFamily: 'Plus Jakarta Sans' }}>₹55L</span>
+                  <span className="font-black text-xl" style={{ color: C.amber, fontFamily: 'Plus Jakarta Sans' }}>₹52L</span>
                 </div>
               </div>
             </motion.div>
@@ -548,14 +565,14 @@ function Section3() {
             <div className="flex items-baseline gap-1">
               <span style={{ fontFamily: 'Plus Jakarta Sans', fontWeight: 900, fontSize: 'clamp(36px,6vw,52px)', lineHeight: 1,
                 background: `linear-gradient(135deg, ${C.orange}, ${C.coral})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                2.4
+                2.2
               </span>
               <span className="text-xl font-bold ml-1" style={{ color: C.text }}>years</span>
             </div>
-            <p className="text-xs mt-1" style={{ color: C.textMuted }}>Cumulative earnings cross total investment ~29 months post-graduation</p>
+            <p className="text-xs mt-1" style={{ color: C.textMuted }}>Cumulative earnings cross total investment ~26 months post-graduation</p>
           </div>
           <div className="flex gap-6 md:ml-auto">
-            {[{ l: 'Investment', v: '₹55L', c: C.textSub }, { l: 'Annual earning', v: '₹64L', c: C.orange }].map(x => (
+            {[{ l: 'Investment', v: '₹52L', c: C.textSub }, { l: 'Annual earning', v: '₹64L', c: C.orange }].map(x => (
               <div key={x.l} className="text-center">
                 <p className="text-xs mb-0.5" style={{ color: C.textMuted }}>{x.l}</p>
                 <p className="font-bold" style={{ color: x.c, fontFamily: 'Plus Jakarta Sans' }}>{x.v}</p>
@@ -575,7 +592,7 @@ function Section3() {
               activeDot={{ r: 5, fill: C.orange, stroke: C.coral, strokeWidth: 2 }}
               dot={(props) => {
                 const { cx, cy, payload } = props
-                if (payload.month !== '2.4yr') return null
+                if (payload.month !== '2.2yr') return null
                 return (
                   <g key="intersection">
                     <circle cx={cx} cy={cy} r={14} fill={C.orange} opacity={0.12} />
@@ -678,7 +695,7 @@ function Section5() {
             <div className="w-px self-stretch" style={{ background: 'rgba(0,0,0,0.08)' }} />
             <div className="flex-1">
               <p className="font-black text-2xl mb-0.5" style={{ color: C.text, fontFamily: 'Plus Jakarta Sans' }}>₹5.5L</p>
-              <p className="text-xs leading-relaxed" style={{ color: C.textSub }}>of your ₹55L total investment covered across 3 programs</p>
+              <p className="text-xs leading-relaxed" style={{ color: C.textSub }}>of your ₹52L total investment covered across 3 programs</p>
             </div>
           </div>
           <div className="mt-4 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.07)' }}>
@@ -935,7 +952,7 @@ export default function App() {
               boxShadow: `0 4px 20px ${C.orange}40`,
               whiteSpace: 'nowrap', fontFamily: 'Plus Jakarta Sans',
             }}>
-            Talk to a Counsellor — It's Free
+            Discuss this Plan with an Expert
             <ArrowRight size={14} />
           </motion.button>
         </div>
